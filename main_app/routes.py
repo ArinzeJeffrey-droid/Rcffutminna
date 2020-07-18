@@ -34,7 +34,7 @@ def save_book(book):
     return book_fn
 
 #dashboard routes
-@app.route("/admin/index")
+@app.route("/admin")
 @login_required
 def admin_index():
     galleries = Gallery.query.order_by(Gallery.id.desc()).limit(3).all()
