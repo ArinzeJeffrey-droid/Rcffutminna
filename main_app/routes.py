@@ -131,9 +131,10 @@ def delete_book(id):
 def gallery():
     galleries = Gallery.query.all()
     if request.method == "POST":
-        image = save_img(request.files['image'])
-        new_gallery = Gallery(tag=request.form['tag'],image=image)
-        new_gallery.save_to_database()
+        for pic in request.files.getlist('image'):
+            image = save_img(pic)
+            new_gallery = Gallery(tag=request.form['tag'],image=image)
+            new_gallery.save_to_database()
         flash("Picture Added Sucessfully", "success")
         return redirect(url_for('gallery'))
     return render_template('admin/gallery.html', galleries=galleries,title="Gallery")
