@@ -18,14 +18,14 @@ def index():
 
 
 #gallery page
-@app.route("/rcffutminna/galleries", methods=['GET','POST'])
+@app.route("/galleries", methods=['GET','POST'])
 def view_gallery():
     page = request.args.get('page', 1, type=int)
     galleries = Gallery.query.order_by(Gallery.id.desc()).paginate(page=page,per_page=9)
     return render_template("user/gallery.html",galleries=galleries, title="Galleries")
 
 
-@app.route("/rcffutminna/alumni", methods=['GET',"POST"])
+@app.route("/alumni", methods=['GET',"POST"])
 def alumni():
     if request.method == "POST":
         if request.form['alumni-unit']:
@@ -57,17 +57,17 @@ def alumni():
             return redirect(url_for('alumni'))
     return render_template('user/alumni.html', title="Alumni Connect")
 
-@app.route("/rcffutminna/events")
+@app.route("/events")
 def events():
     return render_template("user/event.html", title="Events")
 
-@app.route("/rcffutminna/sermons")
+@app.route("/sermons")
 def sermons():
     page = request.args.get('page', 1, type=int)
     messages = Message.query.order_by(Message.id.desc()).paginate(page=page,per_page=9)
     return render_template("user/sermon.html", title="Sermons", messages=messages)
 
-@app.route("/rcffutminna/books")
+@app.route("/books")
 def user_books():
     page = request.args.get('page', 1, type=int)
     books = Book.query.order_by(Book.id.desc()).paginate(page=page,per_page=9)
