@@ -1,5 +1,6 @@
 import os
 import secrets
+from PIL import Image
 from datetime import datetime
 from flask import render_template, url_for, redirect, request,flash
 from main_app import app, db, current_user,login_user, logout_user,login_required
@@ -32,6 +33,18 @@ def save_book(book):
     book_path = os.path.join(app.root_path, 'static/books', book_fn)
     book.save(book_path)
     return book_fn
+
+
+#image compressor middleware
+def img_compressor(img):
+    size = 300, 300
+    for infile in glob.glob("*.jpg"):
+        file, ext = os.path.splitext(infile)
+        im = Image.open(infile)
+        im.thumbnail(size)
+        im.save(file + ".thumbnail", "JPEG")
+        return im
+
 
 #dashboard routes
 @app.route("/admin")
@@ -132,7 +145,8 @@ def gallery():
     galleries = Gallery.query.all()
     if request.method == "POST":
         for pic in request.files.getlist('image'):
-            image = save_img(pic)
+            new = img_compressor(pic)
+            image = save_img(new)
             new_gallery = Gallery(tag=request.form['tag'],image=image)
             new_gallery.save_to_database()
         flash("Picture Added Sucessfully", "success")
