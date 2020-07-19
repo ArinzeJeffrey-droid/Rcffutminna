@@ -163,7 +163,7 @@ def edit_gallery(id):
     if request.method == "POST":
         if request.form['tag'] and request.files['image']:
             os.remove(app.root_path + url_for('static', filename="church_img/"+gallery.image))
-        os.remove(app.root_path + url_for('static', filename="church_img/"+gallery.org_img))
+            os.remove(app.root_path + url_for('static', filename="church_img/"+gallery.org_img))
             image = save_img(request.files['image'])
             gallery.tag = request.form['tag']
             gallery.image = image
