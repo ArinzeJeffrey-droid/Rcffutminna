@@ -25,6 +25,19 @@ def save_img(img):
     img.save(picture_path)
     return picture_fn
 
+def fake(img):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(img.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/church_img', picture_fn)
+    
+    compression_layer = (400,400)
+    img_file = Image.open(img)
+    img_file.thumbnail(compression_layer)
+    img_file.save(picture_path)
+    
+    return picture_fn
+
 #middleware - save books/pdf files
 def save_book(book):
     random_hex = secrets.token_hex(8)
@@ -34,16 +47,6 @@ def save_book(book):
     book.save(book_path)
     return book_fn
 
-
-#image compressor middleware
-def img_compressor(img):
-    size = 300, 300
-    for infile in glob.glob("*.jpg"):
-        file, ext = os.path.splitext(infile)
-        im = Image.open(infile)
-        im.thumbnail(size)
-        im.save(file + ".thumbnail", "JPEG")
-        return im
 
 
 #dashboard routes
@@ -145,9 +148,9 @@ def gallery():
     galleries = Gallery.query.all()
     if request.method == "POST":
         for pic in request.files.getlist('image'):
-            new = img_compressor(pic)
-            image = save_img(new)
-            new_gallery = Gallery(tag=request.form['tag'],image=image)
+            image = save_img(pic)
+            fake_img = fake(pic)
+            new_gallery = Gallery(tag=request.form['tag'],image=image, org_img=fake_img)
             new_gallery.save_to_database()
         flash("Picture Added Sucessfully", "success")
         return redirect(url_for('gallery'))
@@ -160,6 +163,7 @@ def edit_gallery(id):
     if request.method == "POST":
         if request.form['tag'] and request.files['image']:
             os.remove(app.root_path + url_for('static', filename="church_img/"+gallery.image))
+        os.remove(app.root_path + url_for('static', filename="church_img/"+gallery.org_img))
             image = save_img(request.files['image'])
             gallery.tag = request.form['tag']
             gallery.image = image
@@ -178,6 +182,7 @@ def edit_gallery(id):
 def delete_gallery(id):
     gallery = Gallery.find_by_id(id)
     os.remove(app.root_path + url_for('static', filename="church_img/"+gallery.image))
+    os.remove(app.root_path + url_for('static', filename="church_img/"+gallery.org_img))
     gallery.remove_from_database()
     flash("Gallery Deleted Successfully","danger")
     return redirect(url_for('gallery'))

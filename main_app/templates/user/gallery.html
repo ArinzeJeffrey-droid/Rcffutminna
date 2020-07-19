@@ -21,7 +21,7 @@
     {% if galleries %}
         {% for gallery in galleries.items %}
         <div class="gallery-thumbnail">
-            <a href="{{url_for('static', filename='church_img/'+gallery.image)}}"><img src="{{url_for('static', filename='church_img/'+gallery.image)}}" alt=""></a>
+            <a href="{{url_for('static', filename='church_img/'+gallery.image)}}"><img src="{{url_for('static', filename='church_img/'+gallery.org_img)}}" alt=""></a>
             <div class="meta-tag">
                 <ul>
                     <li><i class="fa fa-tag"></i> {{gallery.tag}}</li>
