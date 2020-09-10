@@ -1,8 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user, login_required
+from flask_ngrok import run_with_ngrok
 
 app = Flask(__name__)
+run_with_ngrok(app)
 app.config['SECRET_KEY'] = "dkshkldjflsd"
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///rcffutminna.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
